@@ -18,6 +18,8 @@ export function OLAFConfigFactory(http: HttpClient, OLAFService: OLAFService, co
         .then((data: ConfigModel | any) => {
           // set config
           OLAFService.config = data;
+          // set styles
+          setStyles(data.styles);
           // return other promises
           return Promise.all(configDeps.map((dep) => dep())); // configDeps received from the outside world
         })
@@ -40,15 +42,14 @@ export function verifyTokenFactory(http: HttpClient, OLAFService: OLAFService) {
 }
 
 export const getHost = () => {
-  return "sample.dannlabs.com";
-  // const result: RegExpMatchArray | null = location.origin.match(
-  //   "http(s)?:\\/\\/(?<host>[A-Za-z0-9-.]*)((:\\d*))?(.*)?"
-  // );
-  // const groups = result ? result.groups : null;
-  // if (groups == null || !("host" in groups)) {
-  //   return null;
-  // }
-  // return groups["host"];
+  const result: RegExpMatchArray | null = location.origin.match(
+    "http(s)?:\\/\\/(?<host>[A-Za-z0-9-.]*)((:\\d*))?(.*)?"
+  );
+  const groups = result ? result.groups : null;
+  if (groups == null || !("host" in groups)) {
+    return null;
+  }
+  return groups["host"];
 };
 
 export const setStyles = (styles: any) => {
@@ -107,8 +108,8 @@ const urlEncodeB64 = (input: string) => {
 };
 
 export const bufferToBase64UrlEncoded = (input: number[] | Uint8Array) => {
-  const ie11SafeInput = new Uint8Array(input);
-  return urlEncodeB64(window.btoa(String.fromCharCode(...Array.from(ie11SafeInput))));
+  const safeInput = new Uint8Array(input);
+  return urlEncodeB64(window.btoa(String.fromCharCode(...Array.from(safeInput))));
 };
 
 export const createQueryParams = (params: any) => {

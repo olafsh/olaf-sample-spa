@@ -1,22 +1,29 @@
 # OLAF Sample SPA
 
-To add custom domain open file `angular.json`, find `serve` and add `options` section:
+### How to start?
 
-```
-"options": {
-  "host": "your-custom-domain",
-  "port": 4200
-}
-```
-
-For using custom domain you need to register custom domain in `hosts`. In terminal open `/etc/hosts` and add column:
+First you need to register your custom domain in `hosts`. In terminal open `/etc/hosts` and add column:
 
 ```
 127.0.0.1 your-custom-domain
 ```
 
-And for the end you need to add flag `--disable-host-check` to `ng serve`.
+Then is time to change host in `package.json` file. Find `scripts` and `start` and change flag `--host` with your custom domain.
 
-For example: `ng serve --disable-host-check`
+The file should look like this:
+
+```
+...
+"scripts": {
+  "ng": "ng",
+  "start": "ng serve --host your-custom-domain --ssl --disable-host-check",
+  "build": "ng build",
+  "watch": "ng build --watch --configuration development",
+  "test": "ng test"
+},
+...
+```
+
+Flags `--ssl` and `--disable-host-check` have to be present as well, because OLAF service supports only secure connections and cryptography works well with SSL connection.
 
 Don't worry, this will not unlock security issues, but just allow you to use custom domain instead of `localhost`.
