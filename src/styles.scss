@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --primary-text-color-default: #0f172a;
+  --secondary-text-color-default: #475569;
+  --primary-button-background-color-default: #4f46e5;
+  --primary-button-background-color-hover-default: #3730a3;
+  --primary-button-text-color-default: #ffffff;
+  --primary-button-text-color-hover-default: #ffffff;
+  --secondary-button-text-color-default: #475569;
+  --secondary-button-text-color-hover-default: #1e293b;
+}
+
+.primary-text {
+  color: var(--primary-text-color, var(--primary-text-color-default));
+}
+
+.secondary-text {
+  color: var(--secondary-text-color, var(--secondary-text-color-default));
+}
+
+.primary-button {
+  background-color: var(--primary-button-background-color, var(--primary-button-background-color-default));
+  color: var(--primary-button-text-color, var(--primary-button-text-color-default));
+
+  &:hover {
+    background-color: var(--primary-button-background-color-hover, var(--primary-button-background-color-hover-default));
+    color: var(--primary-button-text-color-hover, var(--primary-button-text-color-hover-default));
+  }
+}
+
+.secondary-button {
+  color: var(--secondary-button-text-color, var(--secondary-button-text-color-default));
+
+  &:hover {
+    color: var(--secondary-button-text-color-hover, var(--secondary-button-text-color-hover-default));
+  }
+}
