@@ -3,22 +3,22 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {OLAFConfigFactory, verifyTokenFactory} from "./olaf-sdk/olaf.utils";
-import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {HttpClientModule} from "@angular/common/http";
 import {OLAFService} from "./olaf-sdk/olaf.service";
 import {HeaderComponent} from "./header/header.component";
 import {LoaderComponent} from "./loader/loader.component";
 import {AuthorizeComponent} from "./authorize/authorize.component";
 import {HomeComponent} from "./home/home.component";
+import {configFactory, verifyTokenFactory} from "./app.utils";
 
-export const OLAFConfigDeps = new InjectionToken<(() => Function)[]>("configDeps");
+export const ConfigDeps = new InjectionToken<(() => Function)[]>("configDeps");
 
 @NgModule({
   declarations: [
     AppComponent,
+    AuthorizeComponent,
     HeaderComponent,
     LoaderComponent,
-    AuthorizeComponent,
     HomeComponent,
   ],
   imports: [
@@ -29,16 +29,16 @@ export const OLAFConfigDeps = new InjectionToken<(() => Function)[]>("configDeps
   providers: [
     {
       provide: APP_INITIALIZER,
-      useFactory: OLAFConfigFactory,
+      useFactory: configFactory,
       multi: true,
-      deps: [HttpClient, OLAFService, OLAFConfigDeps],
+      deps: [OLAFService, ConfigDeps],
     },
     {
-      provide: OLAFConfigDeps,
-      useFactory: (http: HttpClient, OLAFService: OLAFService) => {
-        return [verifyTokenFactory(http, OLAFService)];
+      provide: ConfigDeps,
+      useFactory: (OLAFService: OLAFService) => {
+        return [verifyTokenFactory(OLAFService)];
       },
-      deps: [HttpClient, OLAFService],
+      deps: [OLAFService],
     }
   ],
   bootstrap: [AppComponent]

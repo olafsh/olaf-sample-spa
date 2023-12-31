@@ -1,11 +1,11 @@
 import {inject, Injectable} from "@angular/core";
 import {CanActivateFn, Router, UrlTree} from "@angular/router";
-import {OLAFService} from "./olaf.service";
+import {OLAFService} from "./olaf-sdk/olaf.service";
 
 @Injectable({
   providedIn: "root",
 })
-export class OLAFGuard {
+export class AuthGuard {
   canActivate(router: Router, OLAFService: OLAFService): boolean | UrlTree {
     if (OLAFService.isAuthenticated) {
       return true;
@@ -14,7 +14,7 @@ export class OLAFGuard {
   }
 }
 
-export const OLAFCanActivate: CanActivateFn = () => {
-  return inject(OLAFGuard).canActivate(inject(Router), inject(OLAFService));
+export const CanActivate: CanActivateFn = () => {
+  return inject(AuthGuard).canActivate(inject(Router), inject(OLAFService));
 };
 

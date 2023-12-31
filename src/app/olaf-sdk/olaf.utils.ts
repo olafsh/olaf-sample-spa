@@ -1,45 +1,4 @@
-import {firstValueFrom, from, Observable, of, switchMap} from "rxjs";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {OLAFService} from "./olaf.service";
-import {environment} from "../../environments/environment";
-import {ConfigModel} from "./config.model";
-
-export function OLAFConfigFactory(http: HttpClient, OLAFService: OLAFService, configDeps: (() => Function)[]) {
-  return (): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      firstValueFrom(
-        http.get(`${environment.OLAF_PUBLIC_ENDPOINT}${OLAFService.CONFIG_PATH}`, {
-          headers: new HttpHeaders({
-            "Content-Type": "application/json",
-            "X-APP-HOST": getHost() ?? "",
-          }),
-        })
-      )
-        .then((data: ConfigModel | any) => {
-          // set config
-          OLAFService.config = data;
-          // set styles
-          setStyles(data.styles);
-          // return other promises
-          return Promise.all(configDeps.map((dep) => dep())); // configDeps received from the outside world
-        })
-        .then(() => {
-          resolve({});
-        })
-        .catch(() => {
-          reject();
-        });
-    });
-  };
-}
-
-export function verifyTokenFactory(http: HttpClient, OLAFService: OLAFService) {
-  return (): Promise<any> => {
-    return new Promise((resolve: any) => {
-      OLAFService.verifyToken().subscribe().add(resolve);
-    });
-  };
-}
+import {from, Observable, of, switchMap} from "rxjs";
 
 export const getHost = () => {
   const result: RegExpMatchArray | null = location.origin.match(

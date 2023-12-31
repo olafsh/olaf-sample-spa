@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import {HomeComponent} from "./home/home.component";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {AuthorizeComponent} from "./authorize/authorize.component";
-import {OLAFCanActivate} from "./olaf-sdk/auth.guard";
+import {CanActivate} from "./auth.guard";
 
 const routes: Routes = [
   {
@@ -13,7 +13,7 @@ const routes: Routes = [
   {
     path: "dashboard",
     component: DashboardComponent,
-    canActivate: [OLAFCanActivate],
+    canActivate: [CanActivate],
   },
   {
     path: "authorize",

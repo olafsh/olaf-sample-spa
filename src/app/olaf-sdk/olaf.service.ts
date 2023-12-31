@@ -6,10 +6,12 @@ import {
   createQueryParams,
   createRandomString,
   fetchObservable,
+  getHost,
   parseQueryResult,
   sha256
 } from "./olaf.utils";
 import {AuthModel} from "./auth.model";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +54,6 @@ export class OLAFService {
 
   private setAuthToLocalStorage(auth: AuthModel): boolean {
     // store auth authToken/refreshToken/expiresIn in local storage to keep user logged in between page refreshes
-    console.log(auth);
     if (auth && auth.access_token) {
       localStorage.setItem(this.ACCESS_TOKEN_STORAGE_KEY, JSON.stringify(auth));
       return true;
@@ -66,6 +67,13 @@ export class OLAFService {
     } catch (error) {
       return undefined;
     }
+  }
+
+  public fetchConfig(): Observable<any> {
+    const headers = new Headers({
+      "X-APP-HOST": getHost() ?? ""
+    });
+    return fetchObservable("GET", `${environment.OLAF_PUBLIC_ENDPOINT}${this.CONFIG_PATH}`, null, headers);
   }
 
   public async buildAuthorizeUrl(): Promise<string> {
@@ -118,32 +126,15 @@ export class OLAFService {
     });
   }
 
-  verifyTokenHttp(auth: AuthModel): Observable<any> {
-    const config = this.config;
-    const headers = new Headers({
-      Authorization: `Bearer ${auth.access_token}`,
-    });
-    return fetchObservable("POST", `${config?.api_endpoint}${this.VERIFY_TOKEN_PATH}`, null, headers).pipe(
-      catchError((response: Response) => {
-        return of("skip");
-      })
-    );
-  }
-
   verifyToken(): Observable<any> {
     const auth = this.getAuthFromLocalStorage();
     if (!auth || !auth.access_token) {
       return of(undefined);
     }
-    return this.verifyTokenHttp(auth).pipe(
-      map((data: any) => {
-        if (data === "skip") {
-          return false;
-        }
-        this.isAuthenticated = true;
-        return data;
-      })
-    );
+    const headers = new Headers({
+      Authorization: `Bearer ${auth.access_token}`
+    });
+    return fetchObservable("POST", `${this.config?.api_endpoint}${this.VERIFY_TOKEN_PATH}`, null, headers);
   }
 
   handleRedirectCallback(): Observable<any> {
