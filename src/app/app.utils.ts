@@ -31,8 +31,10 @@ export function verifyTokenFactory(OLAFService: OLAFService) {
   return (): Promise<any> => {
     return new Promise((resolve: any) => {
       OLAFService.verifyToken().subscribe({
-        next: () => {
-          OLAFService.isAuthenticated = true;
+        next: (data) => {
+          if (data !== undefined) {
+            OLAFService.isAuthenticated = true;
+          }
         }
       }).add(resolve);
     });
