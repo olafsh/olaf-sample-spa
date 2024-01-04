@@ -2,27 +2,27 @@ import {ConfigModel} from "./olaf-sdk/config.model";
 import {setStyles} from "./olaf-sdk/olaf.utils";
 import {OLAFService} from "./olaf-sdk/olaf.service";
 import {firstValueFrom} from "rxjs";
+import {resolve} from "@angular/compiler-cli";
 
 export function configFactory(OLAFService: OLAFService, configDeps: (() => Function)[]) {
   return (): Promise<any> => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      if (OLAFService.config !== undefined) {
+        // return other promises (configDeps received from the outside world)
+        await Promise.all(configDeps.map((dep) => dep()));
+        return resolve({});
+      }
       firstValueFrom(
         OLAFService.fetchConfig()
       )
-        .then((config: ConfigModel) => {
+        .then(async (config: ConfigModel) => {
           // set config
           OLAFService.config = config;
-          // set styles
-          setStyles(config.styles);
-          // return other promises
-          return Promise.all(configDeps.map((dep) => dep())); // configDeps received from the outside world
+          // return other promises (configDeps received from the outside world)
+          await Promise.all(configDeps.map((dep) => dep()));
+          return resolve({});
         })
-        .then(() => {
-          resolve({});
-        })
-        .catch(() => {
-          reject();
-        });
+        .catch(() => reject());
     });
   };
 }

@@ -7,7 +7,7 @@ import {
   createRandomString,
   fetchObservable,
   getHost,
-  parseQueryResult,
+  parseQueryResult, setStyles,
   sha256
 } from "./olaf.utils";
 import {AuthModel} from "./auth.model";
@@ -27,7 +27,7 @@ export class OLAFService {
   private ACCESS_TOKEN_STORAGE_KEY = "olaf.auth.token";
 
   private CONFIG_STORAGE_KEY = "olaf.config";
-  private CONFIG_TTL = 3600;
+  private CONFIG_TTL = 3600; // 3600 = 1 hour
 
   config$$: BehaviorSubject<ConfigModel | undefined> = new BehaviorSubject<ConfigModel | undefined>(undefined);
   isAuthenticated$$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -37,8 +37,17 @@ export class OLAFService {
   }
 
   set config(config: ConfigModel) {
+    const now = new Date();
+    config = {
+      ...config,
+      expiry: now.getTime() + (this.CONFIG_TTL * 1000),
+    }
+    // set config
     this.config$$.next(config);
-    localStorage.setItem(this.CONFIG_STORAGE_KEY, JSON.stringify(config));
+    // set config to localstorage
+    this.setConfigToLocalStorage(config);
+    // set styles
+    setStyles(config.styles);
   }
 
   get isAuthenticated(): boolean {
@@ -50,6 +59,34 @@ export class OLAFService {
   }
 
   constructor() {
+    const config = this.getConfigFromLocalStorage();
+    if (config !== undefined) {
+      // set config
+      this.config = config;
+      // set styles
+      setStyles(config.styles);
+    }
+  }
+
+  private setConfigToLocalStorage(config: ConfigModel): boolean {
+    if (config && config.api_endpoint) {
+      localStorage.setItem(this.CONFIG_STORAGE_KEY, JSON.stringify(config));
+      return true;
+    }
+    return false;
+  }
+
+  private getConfigFromLocalStorage(): ConfigModel | undefined {
+    try {
+      const config = JSON.parse(localStorage.getItem(this.CONFIG_STORAGE_KEY) ?? "");
+      const now = new Date();
+      if (config.expiry >= now.getTime()) {
+        return config;
+      }
+      return undefined;
+    } catch (error) {
+      return undefined;
+    }
   }
 
   private setAuthToLocalStorage(auth: AuthModel): boolean {

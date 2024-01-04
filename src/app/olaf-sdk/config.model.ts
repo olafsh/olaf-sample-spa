@@ -17,6 +17,7 @@ export class ConfigModel {
   account_url: string;
   redirect_url: string;
   styles: ApplicationStyles[];
+  expiry: number;
 
   constructor() {
     this.account_name = "";
@@ -25,5 +26,6 @@ export class ConfigModel {
     this.account_url = "";
     this.redirect_url = "";
     this.styles = [];
+    this.expiry = 0;
   }
 }
