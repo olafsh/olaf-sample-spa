@@ -17,7 +17,7 @@ export function configFactory(OLAFService: OLAFService, configDeps: (() => Funct
       )
         .then(async (config: ConfigModel) => {
           // set config
-          OLAFService.config = config;
+          OLAFService.configWithExpiry = config;
           // return other promises (configDeps received from the outside world)
           await Promise.all(configDeps.map((dep) => dep()));
           return resolve({});

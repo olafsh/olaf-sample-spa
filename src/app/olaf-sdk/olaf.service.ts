@@ -37,17 +37,22 @@ export class OLAFService {
   }
 
   set config(config: ConfigModel) {
+    // set config
+    this.config$$.next(config);
+    // set styles
+    setStyles(config.styles);
+  }
+
+  set configWithExpiry(config: ConfigModel) {
     const now = new Date();
     config = {
       ...config,
       expiry: now.getTime() + (this.CONFIG_TTL * 1000),
     }
     // set config
-    this.config$$.next(config);
+    this.config = config;
     // set config to localstorage
     this.setConfigToLocalStorage(config);
-    // set styles
-    setStyles(config.styles);
   }
 
   get isAuthenticated(): boolean {
@@ -63,8 +68,6 @@ export class OLAFService {
     if (config !== undefined) {
       // set config
       this.config = config;
-      // set styles
-      setStyles(config.styles);
     }
   }
 
