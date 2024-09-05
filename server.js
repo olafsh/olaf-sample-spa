@@ -1,8 +1,8 @@
 const express = require("express");
 const path = require("path");
 const app = express();
-app.use(express.static(__dirname + "/dist/olaf-sample-app"));
+app.use(express.static(__dirname + "/dist/olaf-sample-spa"));
 app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname + "/dist/olaf-sample-app/browser/index.html"));
+  res.sendFile(path.join(__dirname + "/dist/olaf-sample-spa/index.html"));
 });
 app.listen(process.env.PORT || 8080);
