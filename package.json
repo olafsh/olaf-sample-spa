@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node server.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "ng build -c=production"
   },
   "private": true,
   "dependencies": {
@@ -22,7 +22,9 @@
     "@olafsh/olaf-sdk-js": "^1.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.2"
+    "zone.js": "~0.14.2",
+    "express": "^4.18.2",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.0.7",
@@ -39,5 +41,9 @@
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
     "typescript": "~5.2.2"
+  },
+  "engines": {
+    "node": "20.9.0",
+    "npm": "10.2.4"
   }
 }
