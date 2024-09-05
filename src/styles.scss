@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  --primary-background-color-default: #ffffff;
   --primary-text-color-default: #0f172a;
   --secondary-text-color-default: #475569;
   --primary-button-background-color-default: #4f46e5;
@@ -11,6 +12,10 @@
   --primary-button-text-color-hover-default: #ffffff;
   --secondary-button-text-color-default: #475569;
   --secondary-button-text-color-hover-default: #1e293b;
+}
+
+.primary-bg {
+  background-color: var(--primary-background-color, var(--primary-background-color-default))
 }
 
 .primary-text {

@@ -1,27 +1,30 @@
-import { Component } from '@angular/core';
-import {OLAFService} from "../olaf-sdk/olaf.service";
+import {Component, OnInit} from '@angular/core';
+import {OLAFSDKService} from "../olaf-sdk.service";
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   isAuthenticated = false;
+  accountName: string | undefined;
   accountProfileUrl: string | undefined;
 
-  constructor(private OLAFService: OLAFService) {
-    this.isAuthenticated = this.OLAFService.isAuthenticated;
-    this.accountProfileUrl = this.OLAFService.config?.account_url;
+  constructor(private OLAFSDKService: OLAFSDKService) {
   }
 
-  onSignIn() {
-    this.OLAFService.loginWithRedirect().then((authorizeUrl) => {
-      window.location.assign(authorizeUrl);
-    });
+  async ngOnInit(): Promise<void> {
+    this.isAuthenticated = await this.OLAFSDKService.isAuthenticated();
+    this.accountName = this.OLAFSDKService.config().account_name;
+    this.accountProfileUrl = this.OLAFSDKService.config().account_url;
   }
 
-  onSignOut() {
-    this.OLAFService.logout();
+  async onSignIn(): Promise<void> {
+    await this.OLAFSDKService.loginWithRedirect();
+  }
+
+  async onSignOut(): Promise<void> {
+    await this.OLAFSDKService.logout();
   }
 }
