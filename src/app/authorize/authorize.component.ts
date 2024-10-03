@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {OLAFSDKService} from "../olaf-sdk.service";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-authorize',
@@ -7,11 +7,11 @@ import {OLAFSDKService} from "../olaf-sdk.service";
   styleUrl: './authorize.component.scss'
 })
 export class AuthorizeComponent implements OnInit {
-  constructor(private OLAFSDKService: OLAFSDKService) {
+  constructor(private authService: AuthService) {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.OLAFSDKService.handleRedirectCallback()
+    await this.authService.handleRedirectCallback()
       .catch((err) => {
         console.log(err);
       });

@@ -5,7 +5,7 @@ import {environment} from "../environments/environment";
 @Injectable({
   providedIn: 'root'
 })
-export class OLAFSDKService {
+export class AuthService {
   private OLAFSDK: any;
 
   constructor() {
@@ -20,6 +20,10 @@ export class OLAFSDKService {
     return this.OLAFSDK.config;
   }
 
+  public accessToken() {
+    return this.OLAFSDK.accessToken;
+  }
+
   public async isAuthenticated() {
     return await this.OLAFSDK.isAuthenticated;
   }
@@ -32,17 +36,18 @@ export class OLAFSDKService {
     await this.OLAFSDK.handleRedirectCallback();
   }
 
-  public async  logout() {
+  public async logout() {
     await this.OLAFSDK.logout();
   }
 }
 
-export function initializeApp(OLAFSDKService: OLAFSDKService) {
+export function initializeApp(authService: AuthService) {
   return async () => {
     try {
-      await OLAFSDKService.fetchConfig();
-      const isValid = await OLAFSDKService.isAuthenticated();
+      await authService.fetchConfig();
+      const isValid = await authService.isAuthenticated();
       if (isValid) {
+        // TODO: Fetch user
         console.log("Authentication successful");
       } else {
         console.log("Authentication failed");

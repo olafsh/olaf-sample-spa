@@ -8,7 +8,7 @@ import {HeaderComponent} from "./header/header.component";
 import {LoaderComponent} from "./loader/loader.component";
 import {AuthorizeComponent} from "./authorize/authorize.component";
 import {HomeComponent} from "./home/home.component";
-import {initializeApp, OLAFSDKService} from "./olaf-sdk.service";
+import {initializeApp, AuthService} from "./auth.service";
 
 @NgModule({
   declarations: [
@@ -28,7 +28,7 @@ import {initializeApp, OLAFSDKService} from "./olaf-sdk.service";
       provide: APP_INITIALIZER,
       useFactory: initializeApp,
       multi: true,
-      deps: [OLAFSDKService],
+      deps: [AuthService],
     },
   ],
   bootstrap: [AppComponent]

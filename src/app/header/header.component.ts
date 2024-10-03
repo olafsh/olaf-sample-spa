@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {OLAFSDKService} from "../olaf-sdk.service";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-header',
@@ -11,20 +11,20 @@ export class HeaderComponent implements OnInit {
   accountName: string | undefined;
   accountProfileUrl: string | undefined;
 
-  constructor(private OLAFSDKService: OLAFSDKService) {
+  constructor(private authService: AuthService) {
   }
 
   async ngOnInit(): Promise<void> {
-    this.isAuthenticated = await this.OLAFSDKService.isAuthenticated();
-    this.accountName = this.OLAFSDKService.config().account_name;
-    this.accountProfileUrl = this.OLAFSDKService.config().account_url;
+    this.isAuthenticated = await this.authService.isAuthenticated();
+    this.accountName = this.authService.config().account_name;
+    this.accountProfileUrl = this.authService.config().account_url;
   }
 
   async onSignIn(): Promise<void> {
-    await this.OLAFSDKService.loginWithRedirect();
+    await this.authService.loginWithRedirect();
   }
 
   async onSignOut(): Promise<void> {
-    await this.OLAFSDKService.logout();
+    await this.authService.logout();
   }
 }
